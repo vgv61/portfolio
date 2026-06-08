@@ -504,6 +504,9 @@
     </section>
 
     <script>
+        // STRICT ANSWER POOL: The secret solution will ONLY ever be chosen from this custom array
+        const ALLOWED_ANSWERS = ["BRAVO", "SKILL", "ALPHA", "SIGMA", "STATS", "SMART", "LOGIC", "CRYPT", "VALOR", "CHAMP"];
+        
         let DICTIONARY = [];
         
         const CORE_WORDS = [
@@ -517,6 +520,10 @@
 
         function unpackSystemRegistry() {
             const vocabularySet = new Set(CORE_WORDS);
+            
+            // Add custom words explicitly to make sure they're valid entries
+            ALLOWED_ANSWERS.forEach(w => vocabularySet.add(w));
+
             const dynamicSeeds = [
                 "WHALE","FLICK","CROSS","TIGER","DREAM","SHINE","FROST","GHOST","FLAME","NIGHT",
                 "STORM","BRICK","CLOCK","BLADE","CROWN","SMOKE","PLUME","WATER","PLUTO","MARS",
@@ -541,7 +548,8 @@
 
         unpackSystemRegistry();
 
-        let SECRET_WORD = DICTIONARY[Math.floor(Math.random() * DICTIONARY.length)]; 
+        // Target assignment explicitly locked onto the strict 10-word pool
+        let SECRET_WORD = ALLOWED_ANSWERS[Math.floor(Math.random() * ALLOWED_ANSWERS.length)]; 
         let currentWordleRow = 0;
         let currentWordleTile = 0;
         let currentGuess = "";
@@ -589,7 +597,8 @@
                     return;
                 }
 
-                if (!DICTIONARY.includes(currentGuess) && currentGuess !== "CLOUD" && currentGuess !== "PROUD") {
+                // Check overall valid guesses list so custom words or standard guesses don't throw an error
+                if (!DICTIONARY.includes(currentGuess) && !ALLOWED_ANSWERS.includes(currentGuess) && currentGuess !== "CLOUD" && currentGuess !== "PROUD") {
                     document.getElementById('errorOverlay').style.display = 'flex';
                     showingErrorMsg = true;
                     return; 
